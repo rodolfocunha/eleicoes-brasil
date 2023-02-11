@@ -17,6 +17,7 @@ from extractors import (
     CandidaturaExtractor,
     BemDeclaradoExtractor,
     VotacaoZonaExtractor,
+    VotacaoPartidoZonaExtractor,
     PrestacaoContasReceitasExtractor,
     PrestacaoContasDespesasExtractor,
 )
@@ -132,6 +133,10 @@ if __name__ == "__main__":
         "despesa": {
              "extractor_class": PrestacaoContasDespesasExtractor,
              "output_filename": settings.OUTPUT_PATH / "despesa.csv.gz"
+        },
+        "votacao-partido-zona": {
+            "extractor_class": VotacaoPartidoZonaExtractor,
+            "output_filename": settings.OUTPUT_PATH / "votacao-partido-zona.csv.xz",
         },
     }
     # TODO: clear '##VERIFICAR BASE 1994##' so we can add 1994 too
