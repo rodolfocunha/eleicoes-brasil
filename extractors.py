@@ -131,6 +131,7 @@ def fix_nome(value):
         value = value[1:]
     return value
 
+
 def fix_sigla_uf(value):
     return value.replace("BH", "BA").replace("LB", "ZZ")
 
@@ -667,7 +668,9 @@ class VotacaoZonaExtractor(Extractor):
         uf = self.extract_state_from_filename(internal_filename)
         if year < 2010:
             header_year = "1994"
-        elif 2010 <= year <= 2022:
+        elif 2010 <= year <= 2010:
+            header_year = "2010"
+        elif 2014 <= year <= 2022:
             header_year = "2014"
         else:
             raise ValueError("Unrecognized year")
