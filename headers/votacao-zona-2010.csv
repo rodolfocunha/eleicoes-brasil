@@ -1,6 +1,6 @@
 nome_tse,nome_final,descricao
-DT_GERACAO,,Data de geração do arquivo (data da extração)
-HH_GERACAO,,Hora de geração do arquivo (hora da extração) - Horário de Brasília
+DT_GERACAO,dt_geracao,Data de geração do arquivo (data da extração)
+HH_GERACAO,hh_geracao,Hora de geração do arquivo (hora da extração) - Horário de Brasília
 ANO_ELEICAO,ano,Ano da eleição
 CD_TIPO_ELEICAO,codigo_tipo_eleicao,Código do tipo de eleição
 NM_TIPO_ELEICAO,tipo_eleicao,Nome do tipo de eleição

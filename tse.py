@@ -32,6 +32,7 @@ def extract_data(ExtractorClass, year_range, output_filename, base_url,
     output_fobj = open_compressed(output_filename, mode="w", encoding="utf-8")
     writer = csv.DictWriter(
         output_fobj,
+        extrasaction='ignore',
         fieldnames=list(extractor.schema.keys()),
     )
     writer.writeheader()
