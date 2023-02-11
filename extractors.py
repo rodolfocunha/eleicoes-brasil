@@ -131,6 +131,9 @@ def fix_nome(value):
         value = value[1:]
     return value
 
+def fix_sigla_uf(value):
+    return value.replace("BH", "BA").replace("LB", "ZZ")
+
 
 def fix_sigla_unidade_federativa(value):
     return value.replace("BH", "BA").replace("LB", "ZZ")
