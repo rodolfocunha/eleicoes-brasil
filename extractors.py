@@ -35,6 +35,7 @@ MAP_CODIGO_CARGO = {
     "PREFEITO": "11",
     "VICE-PREFEITO": "12",
     "VEREADOR": "13",
+    "CONSELHEIRO DISTRITAL": "25",
 }
 MAP_DESCRICAO_CARGO = {
     # Must change
@@ -63,6 +64,7 @@ MAP_DESCRICAO_CARGO = {
     "PREFEITO": "PREFEITO",
     "VICE-PREFEITO": "VICE-PREFEITO",
     "VEREADOR": "VEREADOR",
+    "CONSELHEIRO DISTRITAL": "CONSELHEIRO DISTRITAL",
 }
 
 
@@ -84,10 +86,7 @@ def last_elections_year(reference=None):
     if reference.year % 2 == 1:  # Não é ano de eleição retorna o anterior
         return reference.year - 1
 
-    if reference >= datetime.date(reference.year, 8, 15):  # Passou a divulgação das candidaturas desse ano
-        return reference.year
-
-    return reference.year - 2
+    return reference.year
 
 
 def obfuscate_cpf(cpf):
@@ -351,25 +350,25 @@ class CandidaturaExtractor(Extractor):
         if year == 1994:
             if uf != "PI":
                 uf = "BR"
-            header_year = f"1994_{uf}"
+            header_year = f"1994-{uf}"
         elif 1996 <= year <= 2010:
             header_year = "1996"
         elif year == 2012:
             header_year = "2012"
         elif year == 2014:
             header_year = "2014"
-        elif 2016 <= year <= 2020:
-            header_year = "2020"
-        elif year == 2022:
+        elif 2016 <= year <= 2018:
+            header_year = "2018"
+        elif 2020 <= year <= 2022:
             header_year = "2022"
         else:
             raise ValueError(f"Unrecognized year ({year}, {uf})")
         return {
             "year_fields": read_header(
-                settings.HEADERS_PATH / f"candidatura_{header_year}.csv"
+                settings.HEADERS_PATH / f"candidatura-{header_year}.csv"
             ),
             "final_fields": read_header(
-                settings.HEADERS_PATH / "candidatura_final.csv"
+                settings.HEADERS_PATH / "candidatura-final.csv"
             ),
         }
 
@@ -466,7 +465,7 @@ class CandidaturaExtractor(Extractor):
 class BemDeclaradoExtractor(Extractor):
 
     year_range = tuple(range(2006, last_elections_year() + 1, 2))
-    schema_filename = settings.SCHEMA_PATH / "bem_declarado.csv"
+    schema_filename = settings.SCHEMA_PATH / "bem-declarado.csv"
 
     def filename(self, year):
         return f"bem_candidato/bem_candidato_{year}.zip"
@@ -490,10 +489,10 @@ class BemDeclaradoExtractor(Extractor):
 
         return {
             "year_fields": read_header(
-                settings.HEADERS_PATH / f"bem_declarado_{header_year}.csv"
+                settings.HEADERS_PATH / f"bem-declarado-{header_year}.csv"
             ),
             "final_fields": read_header(
-                settings.HEADERS_PATH / "bem_declarado_final.csv"
+                settings.HEADERS_PATH / "bem-declarado-final.csv"
             ),
         }
 
@@ -538,7 +537,7 @@ class BemDeclaradoExtractor(Extractor):
 class VotacaoZonaExtractor(Extractor):
 
     year_range = tuple(range(1996, last_elections_year(), 2))
-    schema_filename = settings.SCHEMA_PATH / "votacao_zona.csv"
+    schema_filename = settings.SCHEMA_PATH / "votacao-zona.csv"
 
     @cached_property
     def codigo_situacao_candidatura(self):
@@ -548,7 +547,7 @@ class VotacaoZonaExtractor(Extractor):
                 row.situacao_candidatura,
             ): row.novo_codigo_situacao_candidatura
             for row in rows.import_from_csv(
-                settings.HEADERS_PATH / f"situacao_candidatura.csv",
+                settings.HEADERS_PATH / f"situacao-candidatura.csv",
             )
         }
 
@@ -560,7 +559,7 @@ class VotacaoZonaExtractor(Extractor):
                 row.situacao_candidatura,
             ): row.nova_situacao_candidatura
             for row in rows.import_from_csv(
-                settings.HEADERS_PATH / f"situacao_candidatura.csv",
+                settings.HEADERS_PATH / f"situacao-candidatura.csv",
             )
         }
 
@@ -580,10 +579,10 @@ class VotacaoZonaExtractor(Extractor):
             raise ValueError("Unrecognized year")
         return {
             "year_fields": read_header(
-                settings.HEADERS_PATH / f"votacao_zona_{header_year}.csv"
+                settings.HEADERS_PATH / f"votacao-zona-{header_year}.csv"
             ),
             "final_fields": read_header(
-                settings.HEADERS_PATH / "votacao_zona_final.csv"
+                settings.HEADERS_PATH / "votacao-zona-final.csv"
             ),
         }
 
@@ -655,10 +654,10 @@ class PrestacaoContasExtractor(Extractor):
         2010,
         2012,
         2014,
-        "2014_suplementar",
+        "2014-suplementar",
         2016,
-        "2018_orgaos",
-        "2018_candidatos",
+        "2018-orgaos",
+        "2018-candidatos",
     )
 
     def filename(self, year):
@@ -670,11 +669,11 @@ class PrestacaoContasExtractor(Extractor):
             2010: "contas_2010",
             2012: "final_2012",
             2014: "final_2014",
-            "2014_suplementar": "contas_final_sup_2014",
+            "2014-suplementar": "contas_final_sup_2014",
             2016: "contas_final_2016",
-            "2016_suplementar": "contas_final_sup_2016",
-            "2018_orgaos": "de_contas_eleitorais_orgaos_partidarios_2018",
-            "2018_candidatos": "de_contas_eleitorais_candidatos_2018",
+            "2016-suplementar": "contas_final_sup_2016",
+            "2018-orgaos": "de_contas_eleitorais_orgaos_partidarios_2018",
+            "2018-candidatos": "de_contas_eleitorais_candidatos_2018",
         }
         return f"prestacao_contas/prestacao_{urls[year]}.zip"
 
@@ -725,10 +724,10 @@ class PrestacaoContasExtractor(Extractor):
 
         return {
             "year_fields": read_header(
-                settings.HEADERS_PATH / f"{self.type_mov}_{org}_{header_year}.csv"
+                settings.HEADERS_PATH / f"{self.type_mov}-{org}-{header_year}.csv"
             ),
             "final_fields": read_header(
-                settings.HEADERS_PATH / f"{self.type_mov}_final.csv"
+                settings.HEADERS_PATH / f"{self.type_mov}-final.csv"
             ),
         }
 
@@ -839,7 +838,7 @@ class PrestacaoContasReceitasExtractor(PrestacaoContasExtractor):
                     value = ""
                 new[key] = value = utils.unaccent(value).upper()
 
-            cleaned_year, *_unused_suffix = str(year).split('_')
+            cleaned_year, *_unused_suffix = str(year).split('-')
             new["ano"] = int(cleaned_year)
             new["valor"] = fix_valor(new["valor"])
             new["data"] = fix_data(new["data"])
@@ -870,7 +869,7 @@ class PrestacaoContasDespesasExtractor(PrestacaoContasExtractor):
                     value = ""
                 new[key] = value = utils.unaccent(value).upper()
 
-            cleaned_year, *_unused_suffix = str(year).split('_')
+            cleaned_year, *_unused_suffix = str(year).split('-')
             new["ano"] = int(cleaned_year)
             new["valor"] = fix_valor(new["valor"])
             new["data"] = fix_data(new["data"])
