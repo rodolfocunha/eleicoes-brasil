@@ -261,7 +261,8 @@ class Extractor:
             return {"downloaded": False, "filename": filename}
 
         url = self.url(year)
-        file_data = download_file(url, progress=True, chunk_size=256 * 1024, user_agent="Mozilla/4")
+        file_data = download_file(
+            url, progress=True, chunk_size=256 * 1024, user_agent="Mozilla/4")
         rename_file(file_data.uri, filename)
         return {"downloaded": True, "filename": filename}
 
@@ -280,7 +281,8 @@ class Extractor:
             internal_filename = file_info.filename
             if not self.valid_filename(internal_filename):
                 continue
-            fobj = TextIOWrapper(zfile.open(internal_filename), encoding=self.encoding)
+            fobj = TextIOWrapper(zfile.open(
+                internal_filename), encoding=self.encoding)
             fobj = self.fix_fobj(fobj)
             reader = csv.reader(fobj, dialect=utils.TSEDialect)
             header_meta = self.get_headers(year, filename, internal_filename)
@@ -305,7 +307,8 @@ class Extractor:
                         for field in header_meta["year_fields"]
                     }
                     year_fields = [field_map[field_name] for field_name in row]
-                    convert_function = self.convert_row(year_fields, final_fields)
+                    convert_function = self.convert_row(
+                        year_fields, final_fields)
                     continue
 
                 data = convert_function(row)
@@ -374,6 +377,7 @@ class CandidaturaExtractor(Extractor):
 
     def convert_row(self, row_field_names, final_field_names):
         censor = self.censor
+
         def convert(row_data):
             if len(row_data) == 1 and "elapsed" in row_data[0].lower():
                 return None
@@ -391,9 +395,12 @@ class CandidaturaExtractor(Extractor):
             # TODO: fix totalizacao
             new["cpf"] = fix_cpf(new["cpf"])
             new["nome"] = fix_nome(new["nome"])
-            new["sigla_unidade_federativa"] = fix_sigla_unidade_federativa(new["sigla_unidade_federativa"])
-            new["sigla_unidade_federativa_nascimento"] = fix_sigla_unidade_federativa(new["sigla_unidade_federativa_nascimento"])
-            new["titulo_eleitoral"] = fix_titulo_eleitoral(new["titulo_eleitoral"])
+            new["sigla_unidade_federativa"] = fix_sigla_unidade_federativa(
+                new["sigla_unidade_federativa"])
+            new["sigla_unidade_federativa_nascimento"] = fix_sigla_unidade_federativa(
+                new["sigla_unidade_federativa_nascimento"])
+            new["titulo_eleitoral"] = fix_titulo_eleitoral(
+                new["titulo_eleitoral"])
             new["codigo_cargo"], new["cargo"], new["pergunta"] = fix_cargo(
                 new["codigo_cargo"], new["cargo"]
             )
@@ -506,7 +513,8 @@ class BemDeclaradoExtractor(Extractor):
                     value = ""
                 new[key] = value = utils.unaccent(value).upper()
 
-            new["sigla_unidade_federativa"] = fix_sigla_unidade_federativa(new["sigla_unidade_federativa"])
+            new["sigla_unidade_federativa"] = fix_sigla_unidade_federativa(
+                new["sigla_unidade_federativa"])
             new["valor"] = fix_valor(new["valor"])
 
             return new
@@ -557,7 +565,7 @@ class VotacaoZonaExtractor(Extractor):
             (
                 row.codigo_situacao_candidatura,
                 row.situacao_candidatura,
-            ): row.nova_situacao_candidatura
+            ): row.nova_descricao_situacao_candidatura
             for row in rows.import_from_csv(
                 settings.HEADERS_PATH / f"situacao-candidatura.csv",
             )
@@ -573,7 +581,7 @@ class VotacaoZonaExtractor(Extractor):
         uf = self.extract_state_from_filename(internal_filename)
         if year < 2014:
             header_year = "1994"
-        elif 2014 <= year <= 2018:
+        elif 2014 <= year <= 2022:
             header_year = "2014"
         else:
             raise ValueError("Unrecognized year")
@@ -596,14 +604,15 @@ class VotacaoZonaExtractor(Extractor):
                     value = ""
                 new[key] = value = utils.unaccent(value).upper()
 
-            new["sigla_unidade_federativa"] = fix_sigla_unidade_federativa(new["sigla_unidade_federativa"])
+            new["sigla_unidade_federativa"] = fix_sigla_unidade_federativa(
+                new["sigla_unidade_federativa"])
             new["nome"] = fix_nome(new["nome"])
             new["codigo_cargo"], new["cargo"], _ = fix_cargo(
                 new["codigo_cargo"], new["cargo"]
             )
 
             key = (new["codigo_situacao_candidatura"],
-                    new["situacao_candidatura"])
+                   new["situacao_candidatura"])
             new["codigo_situacao_candidatura"] = self.codigo_situacao_candidatura[key]
             new["situacao_candidatura"] = self.situacao_candidatura[key]
 
@@ -628,7 +637,8 @@ class VotacaoZonaExtractor(Extractor):
         elif name.endswith("_turno"):
             value = 1
         elif (
-            name.endswith("_unidade_eleitoral") or name.endswith("_uf") or name.endswith("_municipio")
+            name.endswith("_unidade_eleitoral") or name.endswith(
+                "_uf") or name.endswith("_municipio")
         ):
             value = 2
         elif (
@@ -724,7 +734,8 @@ class PrestacaoContasExtractor(Extractor):
 
         return {
             "year_fields": read_header(
-                settings.HEADERS_PATH / f"{self.type_mov}-{org}-{header_year}.csv"
+                settings.HEADERS_PATH /
+                f"{self.type_mov}-{org}-{header_year}.csv"
             ),
             "final_fields": read_header(
                 settings.HEADERS_PATH / f"{self.type_mov}-final.csv"
@@ -795,7 +806,8 @@ class PrestacaoContasExtractor(Extractor):
 
             # Add year to final csv
             final_fields = ["ano"] + final_fields
-            convert_function = self.convert_row(year_fields, final_fields, year)
+            convert_function = self.convert_row(
+                year_fields, final_fields, year)
             for index, row in enumerate(reader):
                 if index == 0 and (
                     "UF" in row
@@ -817,7 +829,8 @@ class PrestacaoContasExtractor(Extractor):
                     year_fields = [
                         field_map[clean_header(field_name)] for field_name in row
                     ]
-                    convert_function = self.convert_row(year_fields, final_fields, year)
+                    convert_function = self.convert_row(
+                        year_fields, final_fields, year)
                     continue
 
                 yield convert_function(row)
@@ -842,7 +855,8 @@ class PrestacaoContasReceitasExtractor(PrestacaoContasExtractor):
             new["ano"] = int(cleaned_year)
             new["valor"] = fix_valor(new["valor"])
             new["data"] = fix_data(new["data"])
-            new["data_prestacao_contas"] = fix_data(new["data_prestacao_contas"])
+            new["data_prestacao_contas"] = fix_data(
+                new["data_prestacao_contas"])
             new["data_eleicao"] = fix_data(new["data_eleicao"])
             new["cnpj"] = fix_cnpj_cpf(new["cnpj"])
             new["cpf_cnpj_doador"] = fix_cnpj_cpf(new["cpf_cnpj_doador"])
@@ -873,10 +887,12 @@ class PrestacaoContasDespesasExtractor(PrestacaoContasExtractor):
             new["ano"] = int(cleaned_year)
             new["valor"] = fix_valor(new["valor"])
             new["data"] = fix_data(new["data"])
-            new["data_prestacao_contas"] = fix_data(new["data_prestacao_contas"])
+            new["data_prestacao_contas"] = fix_data(
+                new["data_prestacao_contas"])
             new["data_eleicao"] = fix_data(new["data_eleicao"])
             new["cnpj"] = fix_cnpj_cpf(new["cnpj"])
-            new["cpf_cnpj_fornecedor"] = fix_cnpj_cpf(new["cpf_cnpj_fornecedor"])
+            new["cpf_cnpj_fornecedor"] = fix_cnpj_cpf(
+                new["cpf_cnpj_fornecedor"])
             return new
 
         return convert
