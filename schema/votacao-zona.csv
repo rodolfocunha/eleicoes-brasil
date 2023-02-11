@@ -40,4 +40,5 @@ tipo_agremiacao,text
 numero_zona,integer
 total_votos,integer
 voto_em_transito,text
-dt_geracao,text
+DT_GERACAO,text
+HH_GERACAO,text
