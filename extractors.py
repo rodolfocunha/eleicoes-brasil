@@ -631,7 +631,7 @@ class BemDeclaradoExtractor(Extractor):
 
 class VotacaoZonaExtractor(Extractor):
 
-    year_range = tuple(range(1996, last_elections_year(), 2))
+    year_range = tuple(range(1996, last_elections_year() + 1, 2))
     schema_filename = settings.SCHEMA_PATH / "votacao-zona.csv"
 
     @cached_property
@@ -668,9 +668,9 @@ class VotacaoZonaExtractor(Extractor):
         uf = self.extract_state_from_filename(internal_filename)
         if year < 2010:
             header_year = "1994"
-        elif 2010 <= year <= 2010:
+        elif year == 2010:
             header_year = "2010"
-        elif 2012 <= year <= 2012:
+        elif year == 2012:
             header_year = "2012"    
         elif 2014 <= year <= 2022:
             header_year = "2014"

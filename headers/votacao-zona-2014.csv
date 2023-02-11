@@ -30,10 +30,16 @@ TP_AGREMIACAO,tipo_agremiacao,Tipo de agremiação - pode assumir os valores “
 NR_PARTIDO,numero_partido,Número do partido do candidato
 SG_PARTIDO,sigla_partido,Sigla do partido do candidato
 NM_PARTIDO,partido,Nome do partido do candidato
+NR_FEDERACAO,numero_federacao,Número da Federação a qual concorre a candidata ou candidato
+NM_FEDERACAO,federacao,Nome da Federação a qual concorre a candidata ou candidato
+SG_FEDERACAO,sigla_federacao,Sigla da Federação a qual concorre a candidata ou candidato
+DS_COMPOSICAO_FEDERACAO,composicao_federacao,Composição da Federação a qual concorre a candidata ou candidato
 SQ_COLIGACAO,codigo_legenda,Número sequencial da coligação da qual o candidato pertence
 NM_COLIGACAO,nome_legenda,Nome da coligação da qual o candidato pertence
 DS_COMPOSICAO_COLIGACAO,composicao_legenda,Descrição da composição da coligação da qual o candidato pertence
 CD_SIT_TOT_TURNO,codigo_totalizacao_turno,Código da situação de totalização do candidato naquele turno
 DS_SIT_TOT_TURNO,totalizacao_turno,Descrição da situação de totalização do candidato naquele turno
 ST_VOTO_EM_TRANSITO,voto_em_transito,O indicativo se o quantitativo de votos se refere em trânsito. Pode assumir valores S para Sim e N para Não
+NM_TIPO_DESTINACAO_VOTOS,tipo_destinacao_votos,Nome do tipo da destinação dos votos
+QT_VOTOS_NOMINAIS_VALIDOS,total_votos_validos,Quantidade de votos nominais válidos da candidata ou candidato totalizados naquele município e zona
 QT_VOTOS_NOMINAIS,total_votos,Quantidade de votos nominais totalizados para aquele candidato naquele município e zona
