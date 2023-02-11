@@ -331,9 +331,9 @@ class VotacaoPartidoZonaExtractor(Extractor):
 
     def get_headers(self, year, filename, internal_filename):
         uf = self.extract_state_from_filename(internal_filename)
-        if year < 2014:
+        if year < 2010:
             header_year = "1994"
-        elif 2014 <= year <= 2016:
+        elif 2010 <= year <= 2016:
             header_year = "2014"
         elif year == 2018:
             header_year = "2018"
